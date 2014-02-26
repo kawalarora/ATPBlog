@@ -1,0 +1,125 @@
+﻿<script src="../../Scripts/jquery-2.0.3.js"></script>
+<script src="../../Scripts/jquery.validate.js" ></script>
+<script src="../../Scripts/jquery.validate.unobtrusive.js"></script>
+@using  ATPBlog.Web.Mvc 
+@model  ATPBlog.Domain.Blog 
+
+@{
+    ViewBag.Title = "ATP Blog";
+}
+
+<header style ="border :solid  " >
+        <h2>ATP Blog</h2>
+</header>
+<script type ="text/javascript" >
+
+$(document).ready(
+        
+    function () {
+           
+               $('#divTable').text = "Loading ....";
+               LoadAll();
+               BindFormEvents();
+           }
+)
+
+function LoadAll() {
+
+        $.ajax({
+            type: "GET",
+            url: "/Blogs/GetAllBlogs",
+            content: "application/html; charset=utf-8",
+            dataType: "html"
+        })
+
+        .success(function (result) {
+            
+            DisplayGrid(result);
+        })
+        .error(function (result) {
+
+            alert("Error in getting blogs");
+        });
+
+         
+
+    }
+
+function BindGridEvents() {
+    $('.blog_delete').click(function (e) {
+        e.preventDefault();
+        var $this = $(this);
+
+        $.ajax({
+            type: "POST",
+
+            url: "/Blogs/DeleteBlog",
+            data: 'id=' + $this.attr('data-id')
+        })
+
+    .success(function (result) {
+        DisplayGrid(result);
+    })
+    .error(function (result) {
+
+        alert("Error in getting blog");
+    });
+
+    });
+
+
+}
+function BindFormEvents() {
+    $('form').submit(function (evt) {
+        evt.preventDefault();
+        var $form = $(this);
+        if ($form.valid()) {
+            $.ajax({
+                type: "POST",
+                url: "/Blogs/UpdateBlog",
+                data: $form.serialize()  
+            })
+
+           .success(function (result) {
+               DisplayGrid(result);
+               $('#BlogText').val(  "");
+             })
+             .error(function (result) {
+                   alert("error in getting blogs");
+              });
+        }
+    });
+
+}
+function DisplayGrid(result) {
+    $('#divTable').html(result);
+    BindGridEvents();
+}
+
+</script>
+<div id ="divTable"></div>
+
+
+@using (Html.BeginForm()) {
+  
+<fieldset>
+        <legend  > </legend>
+     
+        <div class="editor-label">
+            @Html.LabelFor(model => model.BlogText)
+        </div>
+        <div class="editor-field">
+             
+            @Html.TextAreaFor(model => model.BlogText, new { style = "width:100%;height:100" })
+            @Html.ValidationMessageFor(model => model.BlogText )
+        </div>
+        <div >
+            @Html.HiddenFor(model =>model.BlogTime )
+        </div>
+
+        <p   >
+            <input id="submitForm" style ="float :right " type="submit" value="Add entry" />
+        </p>
+    </fieldset>
+    <footer style="border :groove "></footer>
+}

@@ -1,0 +1,27 @@
+﻿@using  ATPBlog.Web.Mvc 
+@model IEnumerable<ATPBlog.Domain.Blog>
+           <div style="height :300px;overflow:scroll; ">
+<table style ="width:100%;" >
+@foreach (var item in Model) {
+    <tr  >
+        <td colspan ="2"  >
+            <div style="white-space: pre-line;border-style :groove  ">
+            @Html.DisplayFor(modelItem => item.BlogText   )
+             </div>
+        </td>
+     </tr>
+    <tr>    
+         <td>
+            @Html.ActionLink("Remove", "Delete", new { id=item.Id  } , new { @class="blog_delete", data_id=item.Id })          
+         
+        </td>
+        <td>
+            <div style ="text-align :right "> 
+            @string.Format(new  CustomDateProvider(),"{0}",   item.BlogTime) 
+                 
+            </div>
+        </td>  
+    </tr>
+}
+</table>
+               </div>
