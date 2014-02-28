@@ -28,12 +28,11 @@ function LoadAll() {
         $.ajax({
             type: "GET",
             url: "/Blogs/GetAllBlogs",
-            content: "application/html; charset=utf-8",
-            dataType: "html"
+            content: "application/json; charset=utf-8",
+            dataType: "json"
         })
 
         .success(function (result) {
-            
             DisplayGrid(result);
         })
         .error(function (result) {
@@ -62,7 +61,7 @@ function BindGridEvents() {
     })
     .error(function (result) {
 
-        alert("Error in getting blog");
+        alert("Error in deleting blog");
     });
 
     });
@@ -85,14 +84,21 @@ function BindFormEvents() {
                $('#BlogText').val(  "");
              })
              .error(function (result) {
-                   alert("error in getting blogs");
+                   alert("error in updating blogs");
               });
         }
     });
 
 }
 function DisplayGrid(result) {
-    $('#divTable').html(result);
+
+    if (result.ActionSuccess) {
+        $('#divTable').html(result.HtmlResult);
+    }
+    else
+        alert(result.ErrorMessage);
+
+    
     BindGridEvents();
 }
 
